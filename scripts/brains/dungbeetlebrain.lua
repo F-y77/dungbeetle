@@ -17,12 +17,24 @@ end)
 
 -- 寻找粪便的函数
 local function FindFoodAction(inst)
+    if inst.components.eater == nil then
+        return
+    end
+    
+    -- 直接使用ItemIsFood函数来检查物品是否可以被吃
     local target = FindEntity(inst, SEE_FOOD_DIST, 
         function(item) 
-            return item.prefab == "poop" and item:IsOnValidGround()
+            -- 在查找时打印日志，以便确认是否正确找到粪便
+            if item.prefab == "poop" then
+                print("找到了粪便:", item)
+            end
+            return item.prefab == "poop" and 
+                   item:IsOnValidGround()
         end)
     
     if target then
+        -- 打印日志，确认找到了目标
+        print("屎壳郎决定去吃:", target)
         return BufferedAction(inst, target, ACTIONS.EAT)
     end
 end

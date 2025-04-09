@@ -17,3 +17,25 @@ TUNING.DUNG_BEETLE_RUN_SPEED = 6
 STRINGS.NAMES.DUNGBEETLE = "屎壳郎"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.DUNGBEETLE = "它喜欢滚粪球！"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.DUNGBEETLE_UNDUNGED = "它失去了它珍贵的粪球。"
+
+-- 修改eater组件，使屎壳郎可以吃粪便
+--已失效但为了喜爱效果保留
+local function ModifyPoopEdible()
+    -- 让粪便可以被屎壳郎吃
+    AddPrefabPostInit("poop", function(inst)
+        -- 如果已有edible组件，只修改foodtype；如果没有，添加组件
+        if inst.components.edible == nil then
+            if not inst:HasTag("cooked") then
+                inst:AddComponent("edible")
+                inst.components.edible.foodtype = FOODTYPE.GENERIC
+                inst.components.edible.healthvalue = 100  -- 设置健康值
+                inst.components.edible.hungervalue = 0  -- 设置饥饿值
+                inst.components.edible.sanityvalue = 0  -- 设置精神值
+            end
+        else
+            inst.components.edible.foodtype = FOODTYPE.GENERIC
+        end
+    end)
+end
+
+ModifyPoopEdible()

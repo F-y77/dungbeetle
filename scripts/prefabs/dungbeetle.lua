@@ -10,17 +10,14 @@ local prefabs =
 
 local brain = require "brains/dungbeetlebrain"
 
--- 用于判断是否可食用的函数
-local function CanEatTest(inst, item)
-    return item.prefab == "poop" -- 只吃粪便
-end
-
 -- 当吃下食物时调用的函数
 local function OnEat(inst, food)
     if food.prefab == "poop" then
         -- 粪便恢复30%的生命值
         if inst.components.health then
             inst.components.health:DoDelta(inst.components.health.maxhealth * 0.3)
+            -- 输出debug信息
+            print("屎壳郎吃了粪便，恢复了生命值")
         end
     end
 end
@@ -60,15 +57,16 @@ local function fn()
     inst:SetStateGraph("SGdungbeetle")
     inst:SetBrain(brain)
     
-    -- 添加吃东西的组件
+    -- 添加吃东西的组件 - 修改为DST兼容的方式
     inst:AddComponent("eater")
+    -- 在DST中设置可以吃的食物类型
     inst.components.eater:SetDiet({ FOODTYPE.GENERIC }, { FOODTYPE.GENERIC })
-    inst.components.eater:SetCanEatTest(CanEatTest)
+    inst.components.eater:SetCanEatHorrible(true)  -- 可以吃恶心的食物（如粪便）
+    inst.components.eater:SetStrongStomach(true)   -- 有强壮的胃（不会因吃恶心食物而降低精神值）
     inst.components.eater:SetOnEatFn(OnEat)
     
-    -- 添加食物目标寻找组件
-    inst:AddComponent("foodaffinity")
-    inst.components.foodaffinity:AddFoodtags("poop")
+    -- 添加可以吃粪便的标签
+    inst:AddTag("poop_eater")
     
     inst:AddComponent("locomotor")
     inst.components.locomotor.walkspeed = TUNING.DUNG_BEETLE_WALK_SPEED

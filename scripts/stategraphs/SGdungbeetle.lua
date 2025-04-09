@@ -90,17 +90,12 @@ local states =
         
         onenter = function(inst)
             inst.Physics:Stop()
-            -- 如果有eat动画，使用eat动画，如果没有，可以暂时用idle
-            if inst.AnimState:IsCurrentAnimation("idle") or true then
-                inst.AnimState:PlayAnimation("eat") -- 如果有eat动画
-            else
-                inst.AnimState:PlayAnimation("idle") -- 临时替代
-            end
+            inst.AnimState:PlayAnimation("eat")
         end,
         
         timeline =
         {
-            -- 在动画的中间吃东西
+            -- 在动画的中间执行吃东西的动作
             TimeEvent(10*FRAMES, function(inst) 
                 inst:PerformBufferedAction() 
             end),
