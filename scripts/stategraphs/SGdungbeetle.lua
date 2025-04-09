@@ -1,31 +1,38 @@
 -- scripts/stategraphs/SGdungbeetle.lua
-
--- 屎壳郎状态图
 require("stategraphs/commonstates")
 
--- 动作
 local actionhandlers = 
 {
 }
 
--- 事件
 local events =
 {
-    CommonHandlers.OnLocomote(true, true),
-    CommonHandlers.OnSleep(),
-    CommonHandlers.OnFreeze(),
-    CommonHandlers.OnAttacked(),
-    CommonHandlers.OnDeath(),
-    
-    EventHandler("bumped", 
+    EventHandler("locomote", 
         function(inst) 
-            if inst:HasTag("hasdung") and not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
-                inst.sg:GoToState("bumped")
+            if not inst.sg:HasStateTag("busy") then
+                if not inst.components.locomotor:WantsToMoveForward() then
+                    if not inst.sg:HasStateTag("idle") then
+                        inst.sg:GoToState("idle")
+                    end
+                else -- 无论是走还是跑，都使用walk动画
+                    if not inst.sg:HasStateTag("walking") then
+                        inst.sg:GoToState("walk")
+                    end
+                end
             end
         end),
+    
+    EventHandler("attacked", function(inst) 
+        if not inst.sg:HasStateTag("busy") then
+            inst.sg:GoToState("hit") 
+        end 
+    end),
+    
+    EventHandler("death", function(inst) 
+        inst.sg:GoToState("death") 
+    end),
 }
 
--- 状态
 local states =
 {
     State{
@@ -34,55 +41,18 @@ local states =
         
         onenter = function(inst)
             inst.Physics:Stop()
-            if inst:HasTag("hasdung") then
-                inst.AnimState:PlayAnimation("ball_idle", true)
-            else
-                inst.AnimState:PlayAnimation("idle", true)
-            end
+            inst.AnimState:PlayAnimation("idle", true)
         end,
     },
 
     State{
         name = "walk",
-        tags = {"moving", "canrotate"},
+        tags = {"moving", "walking", "canrotate"},
         
         onenter = function(inst) 
-            if inst:HasTag("hasdung") then
-                inst.AnimState:PlayAnimation("ball_walk", true)
-            else
-                inst.AnimState:PlayAnimation("walk", true)
-            end
             inst.components.locomotor:WalkForward()
+            inst.AnimState:PlayAnimation("walk", true)
         end,
-    },
-    
-    State{
-        name = "run",
-        tags = {"moving", "running", "canrotate"},
-        
-        onenter = function(inst) 
-            if inst:HasTag("hasdung") then
-                inst.AnimState:PlayAnimation("ball_run", true)
-            else
-                inst.AnimState:PlayAnimation("run", true)
-            end
-            inst.components.locomotor:RunForward()
-        end,
-    },
-    
-    State{
-        name = "bumped",
-        tags = {"busy"},
-        
-        onenter = function(inst) 
-            inst.AnimState:PlayAnimation("bump")
-            inst:RemoveTag("hasdung")
-        end,
-        
-        events =
-        {
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
-        },
     },
     
     State{
@@ -90,12 +60,8 @@ local states =
         tags = {"busy"},
         
         onenter = function(inst)
-            if inst:HasTag("hasdung") then
-                inst.AnimState:PlayAnimation("ball_hit")
-            else
-                inst.AnimState:PlayAnimation("hit")
-            end
             inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("hit")
         end,
         
         events =
@@ -106,18 +72,15 @@ local states =
 
     State{
         name = "death",
-        tags = {"busy"},
+        tags = {"busy", "dead"},
         
         onenter = function(inst)
-            inst.AnimState:PlayAnimation("death")
             inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("death")
             RemovePhysicsColliders(inst)
             inst.components.lootdropper:DropLoot(inst:GetPosition())
         end,
     },
 }
-
-CommonStates.AddFrozenStates(states)
-CommonStates.AddSleepStates(states)
 
 return StateGraph("dungbeetle", states, events, "idle", actionhandlers)

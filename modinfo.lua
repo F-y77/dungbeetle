@@ -1,7 +1,7 @@
 name = "屎壳郎"
 description = "dungbeetle"
 author = "凌"
-version = "1.1.0"
+version = "1.3.0"
 
 forumthread = ""
 
