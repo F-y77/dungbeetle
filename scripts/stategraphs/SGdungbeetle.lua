@@ -3,6 +3,7 @@ require("stategraphs/commonstates")
 
 local actionhandlers = 
 {
+    ActionHandler(ACTIONS.EAT, "eat"),
 }
 
 local events =
@@ -80,6 +81,35 @@ local states =
             RemovePhysicsColliders(inst)
             inst.components.lootdropper:DropLoot(inst:GetPosition())
         end,
+    },
+    
+    -- 添加吃东西的状态
+    State{
+        name = "eat",
+        tags = {"busy"},
+        
+        onenter = function(inst)
+            inst.Physics:Stop()
+            -- 如果有eat动画，使用eat动画，如果没有，可以暂时用idle
+            if inst.AnimState:IsCurrentAnimation("idle") or true then
+                inst.AnimState:PlayAnimation("eat") -- 如果有eat动画
+            else
+                inst.AnimState:PlayAnimation("idle") -- 临时替代
+            end
+        end,
+        
+        timeline =
+        {
+            -- 在动画的中间吃东西
+            TimeEvent(10*FRAMES, function(inst) 
+                inst:PerformBufferedAction() 
+            end),
+        },
+        
+        events =
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+        },
     },
 }
 
