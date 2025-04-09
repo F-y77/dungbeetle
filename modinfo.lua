@@ -5,8 +5,7 @@ description = [[
 
 屎壳郎的产出地形：
 
-1.只在皮弗娄大草原产出。
-2.只在草丛中产出。
+当玩家采集过某一株草丛之后，屎壳郎将会有3%概率自草丛中生成，无论草丛处在什么地方。
 
 屎壳郎有五个行为：
 
@@ -18,7 +17,7 @@ description = [[
 
 ]]
 author = "凌"
-version = "1.6.0"
+version = "1.7.0"
 
 forumthread = ""
 
@@ -42,4 +41,55 @@ server_filter_tags = {
 }
 
 configuration_options = {
+    {
+        name = "spawn_chance",
+        label = "生成几率",
+        hover = "屎壳郎从草丛中生成的几率",
+        options = {
+            {description = "1%", data = 0.01},
+            {description = "2%", data = 0.02},
+            {description = "3%", data = 0.03},
+            {description = "5%", data = 0.05},
+            {description = "10%", data = 0.1},
+            {description = "15%", data = 0.15},
+            {description = "20%", data = 0.2},
+        },
+        default = 0.03,
+    },
+    {
+        name = "health",
+        label = "屎壳郎生命值",
+        hover = "屎壳郎的最大生命值",
+        options = {
+            {description = "较弱 (100)", data = 100},
+            {description = "普通 (200)", data = 200},
+            {description = "较强 (300)", data = 300},
+            {description = "坚固 (400)", data = 400},
+        },
+        default = 200,
+    },
+    {
+        name = "walk_speed",
+        label = "行走速度",
+        hover = "屎壳郎的行走速度",
+        options = {
+            {description = "慢 (2)", data = 2},
+            {description = "正常 (3)", data = 3},
+            {description = "快 (4)", data = 4},
+            {description = "极快 (5)", data = 5},
+        },
+        default = 3,
+    },
+    {
+        name = "run_speed",
+        label = "奔跑速度",
+        hover = "屎壳郎的奔跑速度",
+        options = {
+            {description = "慢 (4)", data = 4},
+            {description = "正常 (6)", data = 6},
+            {description = "快 (8)", data = 8},
+            {description = "极快 (10)", data = 10},
+        },
+        default = 6,
+    },
 } 
