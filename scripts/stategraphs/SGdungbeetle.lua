@@ -43,6 +43,7 @@ local states =
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("idle", true)
+            inst.SoundEmitter:PlaySound(inst:SoundPath("idle"))
         end,
     },
 
@@ -53,6 +54,7 @@ local states =
         onenter = function(inst) 
             inst.components.locomotor:WalkForward()
             inst.AnimState:PlayAnimation("walk", true)
+            inst.SoundEmitter:PlaySound(inst.sounds.idle)
         end,
     },
     
@@ -61,8 +63,13 @@ local states =
         tags = {"busy"},
         
         onenter = function(inst)
-            inst.Physics:Stop()
-            inst.AnimState:PlayAnimation("hit")
+            if inst:HasTag("hasdung") then                
+                inst.sg:GoToState("bumped")
+            else 
+                inst.AnimState:PlayAnimation("hit")
+                inst.SoundEmitter:PlaySound(inst:SoundPath("hit"))
+                inst.Physics:Stop()    
+            end        
         end,
         
         events =
@@ -78,6 +85,7 @@ local states =
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("death")
+            inst.SoundEmitter:PlaySound(inst:SoundPath("death"))
             RemovePhysicsColliders(inst)
             inst.components.lootdropper:DropLoot(inst:GetPosition())
         end,

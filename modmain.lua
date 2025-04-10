@@ -8,6 +8,8 @@ PrefabFiles = {
     "dungbeetle",
 }
 
+-- 注册声音资源
+
 -- 从配置选项读取设置
 local SPAWN_CHANCE = GetModConfigData("spawn_chance") or 0.03
 local BEETLE_HEALTH = GetModConfigData("health") or 200

@@ -114,6 +114,19 @@ local function fn()
     inst.AnimState:SetBuild("dungbeetle")
     inst.AnimState:PlayAnimation("idle", true)
     
+    -- 设置声音
+    inst.sounds = {
+        idle = "monkeyisland/pollyroger/caw1",
+        walk = "monkeyisland/pollyroger/caw2",
+        death = "monkeyisland/pollyroger/caw3",
+        hit = "monkeyisland/pollyroger/caw4",
+    }
+
+    -- 添加声音路径函数
+    inst.SoundPath = function(inst, event)
+        return inst.sounds[event]
+    end
+    
     inst.entity:SetPristine()
     
     if not TheWorld.ismastersim then
@@ -163,6 +176,16 @@ local function fn()
     
     -- 加载时设置粪便产生任务
     inst.OnLoad = OnLoad
+
+    -- 监听受击事件播放声音
+    inst:ListenForEvent("attacked", function(inst)
+        inst.SoundEmitter:PlaySound(inst:SoundPath("hit"))
+    end)
+
+    -- 监听死亡事件播放声音
+    inst:ListenForEvent("death", function(inst)
+        inst.SoundEmitter:PlaySound(inst:SoundPath("death"))
+    end)
     
     return inst
 end

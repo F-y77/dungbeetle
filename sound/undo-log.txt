@@ -1,0 +1,8 @@
+19:09:10 c:\anthill_jobs\job504524\fmod4\tools\fmod_designer\src\sounddefform.ui.h:2159 FR: Delete Sound Def Item
+19:09:29 c:\anthill_jobs\job504524\fmod4\tools\fmod_designer\src\eventform.ui.h:2202 CH: Delete Events/Event Groups/Event Categories
+19:09:47 ..\..\src\simpleeventcontroller.cpp:606 HV: Set Playback Mode
+19:10:04 c:\anthill_jobs\job504524\fmod4\tools\fmod_designer\src\eventform.ui.h:2202 CH: Delete Events/Event Groups/Event Categories
+19:10:30 c:\anthill_jobs\job504524\fmod4\tools\fmod_designer\src\eventform.ui.h:1529 HH: Add Simple Event
+19:10:44 ..\..\src\simpleeventcontroller.cpp:1734 IS: Add Sound to Playlist
+19:10:56 c:\anthill_jobs\job504524\fmod4\tools\fmod_designer\src\eventform.ui.h:1529 HH: Add Simple Event
+19:11:00 ..\..\src\simpleeventcontroller.cpp:1734 IS: Add Sound to Playlist
